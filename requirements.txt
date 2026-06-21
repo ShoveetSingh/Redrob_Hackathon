@@ -1,0 +1,8 @@
+Flask
+pandas
+sqlalchemy
+sentence-transformers
+scikit-learn
+openpyxl
+numpy
+python-dotenv
