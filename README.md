@@ -147,9 +147,7 @@ Uses Redrob behavioral indicators such as:
 candidate_discovery/
 │
 ├── app.py
-├── database.py
-├── models.py
-├── ranking.py
+
 │
 ├── dataset/
 │   ├── candidates.jsonl
@@ -157,11 +155,6 @@ candidate_discovery/
 │
 ├── templates/
 │   ├── index.html
-│   └── results.html
-│
-├── static/
-│   ├── style.css
-│   └── app.js
 │
 ├── outputs/
 │
