@@ -66,10 +66,17 @@ list=[]
 candidate=[]
 incr =0
 candidate_skill=[]
+
 for row in candidate_data.itertuples(index=True):
     s=''
+    sk= ''
+    cand_des=set()
     for item in row:
         s+=str(item)+' '
+    for skill in row.skill:
+      cand_des.add(skill['name'].lower())
+    res=job_des.intersection(cand_des)
+    candidate_skill.append(len(job_des)/len(res))
     
     candidate.append(s)
     
@@ -82,7 +89,9 @@ similarity = util.cos_sim(emb1,emb2)
 
 list = [x.item() for x in similarity[0]]
 
-candidate_data['Similarity']=list
+candidate_data['Similarity_Score']=list
+candidate_data['Skill_Score']=candidate_skill
+
 
 #df = candidate_data.sort_values(by='Similarity',ascending=False)
 
