@@ -2,7 +2,9 @@ import re
 import pandas as  pd
 from sentence_transformers import SentenceTransformer,util
 from docx import Document
+from datetime import datetime
 
+date_format = "%Y-%m-%d"
 
 model=SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -66,6 +68,74 @@ list=[]
 candidate=[]
 incr =0
 candidate_skill=[]
+redrob = candidate['redrob_signals']
+si=[]
+dic = {
+     "profile_completeness_score":0.15,
+    "signup_date":{True:0.05,False:0.02},
+    "last_active_date":{True:0.05,False:0.02},
+    "open_to_work_flag":0.15,
+    "profile_views_received_30d":0.05,
+    "applications_submitted_30d":0.05,
+    "recruiter_response_rate":0.10,
+    "avg_response_time_hours":0.08,
+    "skill_assessment_scores":0.12,
+    "connection_count":0.02,
+    "endorsements_received":0.03,
+    "notice_period_days":0.02,
+    "expected_salary_range_inr_lpa":0.5,
+    "preferred_work_mode":0.25,
+    "willing_to_relocate":0.25,
+    "github_activity_score":0.01,
+    "search_appearance_30d":0.01,
+    "saved_by_recruiters_30d":0.1,
+    "interview_completion_rate":0.2,
+    "offer_acceptance_rate":0.2,
+    "verified_email":0.1,
+    "verified_phone":0.1,
+    "linkedin_connected":0.05
+}
+
+
+
+for key,values in redrob.items():
+   
+   if key == "skill_assessment_scores":
+      total=0
+      for k,v in values.item():
+         total+=v
+      total=total/len(values)
+      total=total*dic.get(key)
+   if key == "expected_salary_range_inr_lpa":
+      av=0
+      for k,v in values.item():
+         av+=v
+      av=av/2
+      total+=av*dic.get(key)
+   if values==True:
+      total+=10*dic.get(key)
+   elif type(values)==str:
+      parsed_date = datetime.strptime(values, date_format)
+      current_date = datetime.now()
+      difference = current_date - parsed_date
+      if key == 'signup_date':
+       if difference>14:
+           total+=difference*dic.get(key).get(True)
+       else:
+           total+=difference*dic.get(key).get(False)
+      else:
+          if difference<=3:
+           total+=difference*dic.get(key).get(True)
+          else:
+           total+=dic.get(key).get(False)
+   else:
+      total+=values*dic.get(key)
+   
+   si.append(total)
+    
+      
+      
+    
 
 for row in candidate_data.itertuples(index=True):
     s=''
@@ -91,10 +161,11 @@ list = [x.item() for x in similarity[0]]
 
 candidate_data['Similarity_Score']=list
 candidate_data['Skill_Score']=candidate_skill
+candidate_data['Behaviour_Score']=si
+candidate_data['Final_Score']=0.5*candidate_data["Similarity_Score"]+ 0.25*candidate_data["Skill_Score"]+0.25*candidate_data["behaviour_score"]
+df = candidate_data.sort_values(by='Final_Score',ascending=False)
+df.to_csv('outputs/top_candidates.csv',index=False)
 
-
-#df = candidate_data.sort_values(by='Similarity',ascending=False)
-
-#print(df.head(100))
+print(df.head(10))
 
  
