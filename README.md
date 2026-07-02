@@ -130,14 +130,9 @@ Uses Redrob behavioral indicators such as:
 
 | Component         | Technology            |
 | ----------------- | --------------------- |
-| Backend           | Flask                 |
-| Database          | SQLite                |
-| ORM               | SQLAlchemy            |
 | Data Processing   | Pandas                |
 | Embeddings        | Sentence Transformers |
-| Similarity Search | Scikit-learn          |
-| Frontend          | HTML, CSS, JavaScript |
-| Export            | OpenPyXL              |
+| Export            | pandas                |
 
 ---
 
